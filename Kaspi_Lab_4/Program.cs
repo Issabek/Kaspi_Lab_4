@@ -48,12 +48,12 @@ namespace Kaspi_Lab_4
             tempProduct4.UNIT = "Piece";
             tempProduct4.UnitPrice = 90;
             #endregion
-            myStors[0].Address = "ALmaty, Kablukova, 5/2";
+            myStors[0].StorageAddress = new Address("ALmaty","Kablukova","5/2");
             myStors[0].Area = 1200;
             myStors[0].isCoveredStorage = true;
             myStors[0].ResponsiblePerson = new Employee("Omarov Issabek", Position.AdvancedEmp);
 
-            myStors[1].Address = "ALmaty, Momyshuly, 122";
+            myStors[1].StorageAddress = new Address("ALmaty","Momyshuly","122");
             myStors[1].Area = 800;
             myStors[1].isCoveredStorage = false;
             myStors[1].ResponsiblePerson = new Employee("Denis", Position.IntermdeiateEmp);
@@ -68,11 +68,12 @@ namespace Kaspi_Lab_4
             myStors[1].AddToStorage(tempProduct3, 4000);
             myStors[1].AddToStorage(tempProduct4, 900);
 
+
             myStors[0].MoveProductToStorage(myStors[1], myStors[0].SearchProductBySKU("21F2D"), 500); // Поиск по SKU, перемещение товара из одного склада в другой
             foreach(Storage store in myStors)
             {
                 decimal worthOfStorage = store.TotalWorth();
-                Console.WriteLine("Total worth of storage at {0} is {1}",store.Address, worthOfStorage);
+                Console.WriteLine("Total worth of storage at {0} is {1}", store.StorageAddress.ToString(), worthOfStorage); ;
                 tempDecimal += worthOfStorage;
 
             }

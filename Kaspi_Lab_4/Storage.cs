@@ -6,14 +6,14 @@ namespace Kaspi_Lab_4
 {
     public class Storage
     {
-        public string Address { get; set; }
+        public Address StorageAddress { get; set; }
         public double Area { get; set; }
         public Employee ResponsiblePerson { get; set; }
         Dictionary<Product, int> Products = new Dictionary<Product, int>();
         public bool isCoveredStorage{ get; set; }
         public Storage()
         {
-            
+
         }
         public bool AddToStorage(Product someProd, int Quantity)
         {
@@ -28,7 +28,6 @@ namespace Kaspi_Lab_4
             }
             else
             {
-
                     Products.Add(someProd, Quantity);
                     return true;
                 
