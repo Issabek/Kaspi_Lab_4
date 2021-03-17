@@ -7,6 +7,7 @@ namespace Kaspi_Lab_4
     {
         static void Main(string[] args)
         {
+            #region props
             List<Storage> myStors = new List<Storage>(2);
             myStors.Add(new Storage());
             myStors.Add(new Storage());
@@ -16,8 +17,8 @@ namespace Kaspi_Lab_4
             Heavy tempProduct3 = new Heavy();
             Piecemeal tempProduct4 = new Piecemeal();
 
-
             decimal tempDecimal = 0;
+            #endregion
 
             #region Продукты
             tempProduct.Description = "desc1";
@@ -48,25 +49,34 @@ namespace Kaspi_Lab_4
             tempProduct4.UNIT = "Piece";
             tempProduct4.UnitPrice = 90;
             #endregion
+
+            #region stores
             myStors[0].StorageAddress = new Address("ALmaty","Kablukova","5/2");
             myStors[0].Area = 1200;
-            myStors[0].isCoveredStorage = true;
+            myStors[0].isClosedType = true;
             myStors[0].ResponsiblePerson = new Employee("Omarov Issabek", Position.AdvancedEmp);
 
             myStors[1].StorageAddress = new Address("ALmaty","Momyshuly","122");
             myStors[1].Area = 800;
-            myStors[1].isCoveredStorage = false;
+            myStors[1].isClosedType = false;
             myStors[1].ResponsiblePerson = new Employee("Denis", Position.IntermdeiateEmp);
+            #endregion
+            try
+            {
+                myStors[0].AddToStorage(tempProduct, 100);
+                myStors[0].AddToStorage(tempProduct2, 2000);
+                myStors[0].AddToStorage(tempProduct3, 4000);
+                myStors[0].AddToStorage(tempProduct4, 900);
 
-            myStors[0].AddToStorage(tempProduct,100);
-            myStors[0].AddToStorage(tempProduct2, 2000);
-            myStors[0].AddToStorage(tempProduct3, 4000);
-            myStors[0].AddToStorage(tempProduct4, 900);
-
-            myStors[1].AddToStorage(tempProduct, 100);
-            myStors[1].AddToStorage(tempProduct2, 2000);
-            myStors[1].AddToStorage(tempProduct3, 4000);
-            myStors[1].AddToStorage(tempProduct4, 900);
+                myStors[1].AddToStorage(tempProduct2, 2000);
+                myStors[1].AddToStorage(tempProduct3, 4000);
+                myStors[1].AddToStorage(tempProduct4, 900);
+                myStors[1].AddToStorage(tempProduct, 100);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
 
             myStors[0].MoveProductToStorage(myStors[1], myStors[0].SearchProductBySKU("21F2D"), 500); // Поиск по SKU, перемещение товара из одного склада в другой
