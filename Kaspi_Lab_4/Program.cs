@@ -9,8 +9,10 @@ namespace Kaspi_Lab_4
         {
             #region props
             List<Storage> myStors = new List<Storage>(2);
+            List<Product> myProds = new List<Product>(4);
             myStors.Add(new Storage());
             myStors.Add(new Storage());
+            Random rnd = new Random();
 
             Bulk tempProduct = new Bulk();
             Liquid tempProduct2 = new Liquid();
@@ -48,6 +50,12 @@ namespace Kaspi_Lab_4
             tempProduct4.SKU = "01F2D";
             tempProduct4.UNIT = "Piece";
             tempProduct4.UnitPrice = 90;
+
+            myProds.Add(tempProduct);
+            myProds.Add(tempProduct2);
+            myProds.Add(tempProduct3);
+            myProds.Add(tempProduct4);
+
             #endregion
 
             #region stores
@@ -55,28 +63,42 @@ namespace Kaspi_Lab_4
             myStors[0].Area = 1200;
             myStors[0].isClosedType = true;
             myStors[0].ResponsiblePerson = new Employee("Omarov Issabek", Position.AdvancedEmp);
+            myStors[0].StorageName = "MagnumStorage1";
 
             myStors[1].StorageAddress = new Address("ALmaty","Momyshuly","122");
             myStors[1].Area = 800;
             myStors[1].isClosedType = false;
             myStors[1].ResponsiblePerson = new Employee("Denis", Position.IntermdeiateEmp);
+            myStors[1].StorageName = "MagnumStorage2";
             #endregion
-            try
-            {
-                myStors[0].AddToStorage(tempProduct, 100);
-                myStors[0].AddToStorage(tempProduct2, 2000);
-                myStors[0].AddToStorage(tempProduct3, 4000);
-                myStors[0].AddToStorage(tempProduct4, 900);
-
-                myStors[1].AddToStorage(tempProduct2, 2000);
-                myStors[1].AddToStorage(tempProduct3, 4000);
-                myStors[1].AddToStorage(tempProduct4, 900);
-                myStors[1].AddToStorage(tempProduct, 100);
+            Console.WriteLine("=================================");
+            for (int i = 0; i < myStors.Count; i++) {
+                foreach (Product prod in myProds)
+                {
+                    myStors[i].ProductAdding -= DisplayMessage;
+                    myStors[i].ProductAdding -= DisplayRedMessage;
+                    if (prod.isLooseType && !myStors[i].isClosedType)
+                    {
+                        myStors[i].ProductAdding += DisplayRedMessage;
+                        myStors[i].AddToStorage(prod, rnd.Next(4000));
+                    }
+                    else
+                    {
+                        myStors[i].ProductAdding += DisplayMessage;
+                        myStors[i].AddToStorage(prod, rnd.Next(4000));
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            Console.WriteLine("\n");
+            //myStors[0].AddToStorage(tempProduct, 100);
+            //myStors[0].AddToStorage(tempProduct2, 2000);
+            //myStors[0].AddToStorage(tempProduct3, 4000);
+            //myStors[0].AddToStorage(tempProduct4, 900);
+            //myStors[1].AddToStorage(tempProduct2, 2000);
+            //myStors[1].AddToStorage(tempProduct3, 4000);
+            //myStors[1].AddToStorage(tempProduct4, 900);
+            //myStors[1].AddToStorage(tempProduct, 100);
+            
 
 
             myStors[0].MoveProductToStorage(myStors[1], myStors[0].SearchProductBySKU("21F2D"), 500); // Поиск по SKU, перемещение товара из одного склада в другой
@@ -89,6 +111,17 @@ namespace Kaspi_Lab_4
             }
             Console.WriteLine(tempDecimal);
             Console.WriteLine("Done");
+        }
+        private static void DisplayMessage(object sender, StorageEventArgs ev)
+        {
+            Console.WriteLine(ev.Message);
+        }
+
+        private static void DisplayRedMessage(object sender, StorageEventArgs ev)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ev.Message);
+            Console.ResetColor();
         }
     }
 }

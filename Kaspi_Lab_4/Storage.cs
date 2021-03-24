@@ -4,32 +4,46 @@ using System.Linq;
 
 namespace Kaspi_Lab_4
 {
+    public delegate void StorageHandler(object sender, StorageEventArgs e);
+
     public class Storage
     {
+        public event StorageHandler ProductAdding;
+        public event StorageHandler WrongProductAdding;
+
+        public string StorageName { get; set; }
         public Address StorageAddress { get; set; }
         public double Area { get; set; }
         public Employee ResponsiblePerson { get; set; }
         Dictionary<Product, int> Products = new Dictionary<Product, int>();
         public bool isClosedType{ get; set; }
+
         public Storage()
         {
 
         }
         public bool AddToStorage(Product someProd, int Quantity)
         {
+            StorageEventArgs evt;
             if (someProd.isLooseType == true && this.isClosedType == false)
             {
-                throw new Exception(string.Format("Не соответствует тип склада [{0}] для данного продукта [{1} {2}]",this.StorageAddress,someProd.SKU,someProd.Name));
+                evt = new StorageEventArgs($"На склад {this.StorageName} попытались загрузить товар неподходящего типа {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingWrongProduct);
+                ProductAdding?.Invoke(this, evt);   
+                return false;
             }
             else if (Products.ContainsKey(someProd))
             {
                 Products[someProd] = Products[someProd] + Quantity;
+                evt = new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct);
+                ProductAdding?.Invoke(this,evt );   
                 return true;
             }
             else
             {
-                    Products.Add(someProd, Quantity);
-                    return true;
+                Products.Add(someProd, Quantity);
+                evt = new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct);
+                ProductAdding?.Invoke(this, evt);   
+                return true;
                 
             }
         }
