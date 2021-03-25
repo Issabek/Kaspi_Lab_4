@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
 
 namespace Kaspi_Lab_4
 {
@@ -117,6 +119,29 @@ namespace Kaspi_Lab_4
             {
                 Console.WriteLine(ex.Message);
                 result = null;
+                return false;
+            }
+        }
+
+        public static bool SerializeToCSV(ref Storage storage, string Path)
+        {
+            try
+            {
+                using (var writer = new StreamWriter(Path))
+                {
+                    writer.WriteLine(string.Join(", ", storage.Products.Keys.ToList()[0].GetType().GetProperties().Select(p => p.Name)) + ", Quantity");
+                    foreach (var pair in storage.Products)
+                    {
+                        writer.WriteLine(string.Join(", ", pair.Key.Name,pair.Key.SKU,pair.Key.Description,pair.Key.UnitPrice,pair.Key.UNIT,pair.Key.isLooseType, pair.Value));
+                        
+                    }
+                    Console.WriteLine("Result has been saved at {0}",((FileStream)( writer.BaseStream)).Name);
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error occured:"+ex.Message);
                 return false;
             }
         }

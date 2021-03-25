@@ -26,8 +26,18 @@ namespace Kaspi_Lab_4
         {
             if (someProd.isLooseType == true && this.isClosedType == false)
             {
-                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} попытались загрузить товар неподходящего типа {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingWrongProduct));   
-                return false;
+                try
+                {
+                    Products[someProd] = Products[someProd];
+                    return true;
+                }
+                catch
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("На склад {0} попытались загрузить товар неподходящего типа {1} {2}",this.StorageName,someProd.Name,DateTime.Now);
+                    Console.ResetColor();
+                    return false;
+                }
             }
             else if (Products.ContainsKey(someProd))
             {

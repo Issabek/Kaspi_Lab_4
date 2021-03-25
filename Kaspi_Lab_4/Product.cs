@@ -11,7 +11,18 @@ namespace Kaspi_Lab_4
     }
 
     public class Liquid : Product { }
-    public class Bulk : Product { }
+    public class Bulk : Product {
+        public Bulk() { }
+        public Bulk(Product obj)
+        {
+            this.Name = obj.Name;
+            this.SKU = obj.SKU;
+            this.Description = obj.Description;
+            this.UNIT = obj.UNIT;
+            this.UnitPrice = obj.UnitPrice;
+            this.isLooseType = obj.isLooseType;
+        }
+    }
     public class Piecemeal : Product { }
     public class Heavy : Product { }
 

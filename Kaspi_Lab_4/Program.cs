@@ -91,39 +91,30 @@ namespace Kaspi_Lab_4
             {
                 foreach (Product prod in myProds)
                 {
+                    Product myprod = prod;
+
+                    myStors[i].ProductAdding += DisplayMessage;
+                    myStors[i].AddToStorage( myprod, rnd.Next(4000));
                     myStors[i].ProductAdding -= DisplayMessage;
-                    myStors[i].ProductAdding -= DisplayRedMessage;
-                    if (prod.isLooseType && !myStors[i].isClosedType)
-                    {
-                        myStors[i].ProductAdding += DisplayRedMessage;
-                        myStors[i].AddToStorage(prod, rnd.Next(4000));
-                    }
-                    else
-                    {
-                        myStors[i].ProductAdding += DisplayMessage;
-                        myStors[i].AddToStorage(prod, rnd.Next(4000));
-                    }
                 }
             }
-            myStors[0].AddToStorage(tempProduct5, 2);
-            myStors[0].AddToStorage(tempProduct6, 4);
+            myStors[0].AddToStorage( tempProduct5, 2);
+            myStors[0].AddToStorage( tempProduct6, 4);
             myStors[1].MoveHalf(myStors[0]);
             List<Product> temp = myStors[0].GetAllProducts(myStors[1]); //Gets all existing products from two storages
 
-            Dictionary<Product, double> templist;
-            Report.MeanProdsQuantity(myStors,out templist);
+            Dictionary<Product, double> tempDict;
+            Report.MeanProdsQuantity(myStors, out tempDict);
+
+            Storage stor = myStors[0];
+            Report.SerializeToCSV(ref stor, @"text.csv");
+
+            
         }
          
         private static void DisplayMessage(object sender, StorageEventArgs ev)
         {
             Console.WriteLine(ev.Message);
-        }
-
-        private static void DisplayRedMessage(object sender, StorageEventArgs ev)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(ev.Message);
-            Console.ResetColor();
         }
     }
 }
