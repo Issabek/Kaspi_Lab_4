@@ -15,7 +15,7 @@ namespace Kaspi_Lab_4
         public Address StorageAddress { get; set; }
         public double Area { get; set; }
         public Employee ResponsiblePerson { get; set; }
-        Dictionary<Product, int> Products = new Dictionary<Product, int>();
+        public Dictionary<Product, int> Products = new Dictionary<Product, int>();
         public bool isClosedType{ get; set; }
 
         public Storage()
@@ -24,25 +24,21 @@ namespace Kaspi_Lab_4
         }
         public bool AddToStorage(Product someProd, int Quantity)
         {
-            StorageEventArgs evt;
             if (someProd.isLooseType == true && this.isClosedType == false)
             {
-                evt = new StorageEventArgs($"На склад {this.StorageName} попытались загрузить товар неподходящего типа {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingWrongProduct);
-                ProductAdding?.Invoke(this, evt);   
+                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} попытались загрузить товар неподходящего типа {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingWrongProduct));   
                 return false;
             }
             else if (Products.ContainsKey(someProd))
             {
                 Products[someProd] = Products[someProd] + Quantity;
-                evt = new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct);
-                ProductAdding?.Invoke(this,evt );   
+                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct) );   
                 return true;
             }
             else
             {
                 Products.Add(someProd, Quantity);
-                evt = new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct);
-                ProductAdding?.Invoke(this, evt);   
+                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct));   
                 return true;
                 
             }
@@ -52,7 +48,6 @@ namespace Kaspi_Lab_4
         {
             if (Products.ContainsKey(someProd))
             {
-
                 bool tempbool = AnotherStorage.AddToStorage(someProd, Quantity);
                 if (Products[someProd] > Quantity)
                 {
@@ -98,5 +93,40 @@ namespace Kaspi_Lab_4
             return true;
         }
 
+    }
+
+    public static class StorageExtension
+    {
+        public static List<Product> GetAllProducts(this Storage store, Storage store2)
+        {
+            List<Product> StoreProd1 = store.Products.Keys.ToList();
+            List<Product> StoreProd2 = store2.Products.Keys.ToList();
+            return StoreProd1.Union(StoreProd2).ToList();
+        }
+
+        /// <summary>
+        /// Moves half of all products from one storage if they do not exist in another
+        /// </summary>
+        public static bool MoveHalf(this Storage store2, Storage store)
+        {
+            try
+            {
+                foreach (KeyValuePair<Product, int> pair in store.Products)
+                {
+                    if (!store2.Products.ContainsKey(pair.Key) && pair.Value > 1)
+                    {
+                        store2.AddToStorage(pair.Key, pair.Value / 2);
+                        store.Products[pair.Key] -= pair.Value / 2;
+                    }
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            
+        }
     }
 }
