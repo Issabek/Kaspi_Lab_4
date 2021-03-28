@@ -18,37 +18,22 @@ namespace Kaspi_Lab_4
         public Dictionary<Product, int> Products = new Dictionary<Product, int>();
         public bool isClosedType{ get; set; }
 
-        public Storage()
-        {
+        public Storage() { }
 
-        }
         public bool AddToStorage(Product someProd, int Quantity)
         {
             if (someProd.isLooseType == true && this.isClosedType == false)
             {
-                try
-                {
-                    Products[someProd] = Products[someProd];
-                    return true;
-                }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("На склад {0} попытались загрузить товар неподходящего типа {1} {2}",this.StorageName,someProd.Name,DateTime.Now);
-                    Console.ResetColor();
-                    return false;
-                }
+                return false;
             }
             else if (Products.ContainsKey(someProd))
             {
                 Products[someProd] = Products[someProd] + Quantity;
-                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct) );   
                 return true;
             }
             else
             {
                 Products.Add(someProd, Quantity);
-                ProductAdding?.Invoke(this, new StorageEventArgs($"На склад {this.StorageName} поступил товар {someProd.Name} {DateTime.Now}", this.StorageName, someProd, Quantity, DateTime.Now, StorageEventArgs.EventType.AddingProduct));   
                 return true;
                 
             }
